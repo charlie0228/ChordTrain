@@ -43,6 +43,13 @@ class ChordDifficultyClassifier {
     }
   }
 
+  // 依照訓練資料進行訓練
+  train() {
+    this.setLabelProbabilities()
+    this.setChordCountsInLabels()
+    this.setProbabilityOfChordsInLabels()
+  }
+
   // 將輸入的曲目進行分類
   classify(chords: string[]) {
     const ttal = this.labelProbabilities
@@ -63,13 +70,6 @@ class ChordDifficultyClassifier {
       classified[obj] = first
     })
     console.log(classified)
-  }
-
-  // 依照訓練資料進行訓練
-  train() {
-    this.setLabelProbabilities()
-    this.setChordCountsInLabels()
-    this.setProbabilityOfChordsInLabels()
   }
 
   // 依照訓練資料建立難度分布之比率
