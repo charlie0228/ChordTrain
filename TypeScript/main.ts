@@ -33,7 +33,7 @@ class ChordDifficultyClassifier {
   probabilityOfChordsInLabels: Record<string, Record<string, number>> = {}
 
   // 訓練
-  train(chords: string[], label: string) {
+  addDataset(chords: string[], label: string) {
     // 將標記與譜寫入 songs
     this.songs.push([label, chords])
     // 將相對應順序的曲目標記寫入 labels
@@ -52,42 +52,6 @@ class ChordDifficultyClassifier {
     } else {
       this.labelCounts[label] = 1
     }
-  }
-
-  // 依照訓練資料建立難度分布之比率
-  setLabelProbabilities() {
-    Object.keys(this.labelCounts).forEach((label) => {
-      this.labelProbabilities[label] =
-        this.labelCounts[label] / this.numberOfSongs
-    })
-  }
-
-  // 將各種難度的和弦進行計數
-  setChordCountsInLabels() {
-    this.songs.forEach((i) => {
-      if (this.chordCountsInLabels[i[0]] === undefined) {
-        this.chordCountsInLabels[i[0]] = {}
-      }
-      i[1].forEach((j) => {
-        if (this.chordCountsInLabels[i[0]][j] > 0) {
-          this.chordCountsInLabels[i[0]][j] =
-            this.chordCountsInLabels[i[0]][j] + 1
-        } else {
-          this.chordCountsInLabels[i[0]][j] = 1
-        }
-      })
-    })
-  }
-
-  // 計算各和弦出現於各難度的機率
-  setProbabilityOfChordsInLabels() {
-    Object.keys(this.chordCountsInLabels).forEach((i) => {
-      this.probabilityOfChordsInLabels[i] = {}
-      Object.keys(this.chordCountsInLabels[i]).forEach((j) => {
-        this.probabilityOfChordsInLabels[i][j] =
-          (this.chordCountsInLabels[i][j] * 1.0) / this.numberOfSongs
-      })
-    })
   }
 
   // 將輸入的曲目進行分類
@@ -112,6 +76,49 @@ class ChordDifficultyClassifier {
     console.log(classified)
   }
 
+  // 依照訓練資料進行訓練
+  train() {
+    this.setLabelProbabilities()
+    this.setChordCountsInLabels()
+    this.setProbabilityOfChordsInLabels()
+  }
+
+  // 依照訓練資料建立難度分布之比率
+  private setLabelProbabilities() {
+    Object.keys(this.labelCounts).forEach((label) => {
+      this.labelProbabilities[label] =
+        this.labelCounts[label] / this.numberOfSongs
+    })
+  }
+
+  // 將各種難度的和弦進行計數
+  private setChordCountsInLabels() {
+    this.songs.forEach((i) => {
+      if (this.chordCountsInLabels[i[0]] === undefined) {
+        this.chordCountsInLabels[i[0]] = {}
+      }
+      i[1].forEach((j) => {
+        if (this.chordCountsInLabels[i[0]][j] > 0) {
+          this.chordCountsInLabels[i[0]][j] =
+            this.chordCountsInLabels[i[0]][j] + 1
+        } else {
+          this.chordCountsInLabels[i[0]][j] = 1
+        }
+      })
+    })
+  }
+
+  // 計算各和弦出現於各難度的機率
+  private setProbabilityOfChordsInLabels() {
+    Object.keys(this.chordCountsInLabels).forEach((i) => {
+      this.probabilityOfChordsInLabels[i] = {}
+      Object.keys(this.chordCountsInLabels[i]).forEach((j) => {
+        this.probabilityOfChordsInLabels[i][j] =
+          (this.chordCountsInLabels[i][j] * 1.0) / this.numberOfSongs
+      })
+    })
+  }
+
   // 取得總曲目長度
   private get numberOfSongs() {
     return this.songs.length
@@ -119,23 +126,21 @@ class ChordDifficultyClassifier {
 }
 
 export const classify = (chords: string[]): void => {
-  const chordDifficultyClassifier = new ChordDifficultyClassifier()
+  const classifier = new ChordDifficultyClassifier()
 
-  chordDifficultyClassifier.train(imagine, 'easy')
-  chordDifficultyClassifier.train(somewhere_over_the_rainbow, 'easy')
-  chordDifficultyClassifier.train(tooManyCooks, 'easy')
-  chordDifficultyClassifier.train(iWillFollowYouIntoTheDark, 'medium')
-  chordDifficultyClassifier.train(babyOneMoreTime, 'medium')
-  chordDifficultyClassifier.train(creep, 'medium')
-  chordDifficultyClassifier.train(paperBag, 'hard')
-  chordDifficultyClassifier.train(toxic, 'hard')
-  chordDifficultyClassifier.train(bulletproof, 'hard')
+  classifier.addDataset(imagine, 'easy')
+  classifier.addDataset(somewhere_over_the_rainbow, 'easy')
+  classifier.addDataset(tooManyCooks, 'easy')
+  classifier.addDataset(iWillFollowYouIntoTheDark, 'medium')
+  classifier.addDataset(babyOneMoreTime, 'medium')
+  classifier.addDataset(creep, 'medium')
+  classifier.addDataset(paperBag, 'hard')
+  classifier.addDataset(toxic, 'hard')
+  classifier.addDataset(bulletproof, 'hard')
 
-  chordDifficultyClassifier.setLabelProbabilities()
-  chordDifficultyClassifier.setChordCountsInLabels()
-  chordDifficultyClassifier.setProbabilityOfChordsInLabels()
+  classifier.train()
 
-  chordDifficultyClassifier.classify(chords)
+  classifier.classify(chords)
 }
 
 classify(['d', 'g', 'e', 'dm'])
