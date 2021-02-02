@@ -57,8 +57,8 @@ class ChordDifficultyClassifier {
   // 依照訓練資料建立難度分布之比率
   setLabelProbabilities() {
     Object.keys(this.labelCounts).forEach((label) => {
-      const numberOfSongs = this.getNumberOfSongs()
-      this.labelProbabilities[label] = this.labelCounts[label] / numberOfSongs
+      this.labelProbabilities[label] =
+        this.labelCounts[label] / this.numberOfSongs
     })
   }
 
@@ -85,7 +85,7 @@ class ChordDifficultyClassifier {
     Object.keys(this.probabilityOfChordsInLabels).forEach((i) => {
       Object.keys(this.probabilityOfChordsInLabels[i]).forEach((j) => {
         this.probabilityOfChordsInLabels[i][j] =
-          (this.probabilityOfChordsInLabels[i][j] * 1.0) / this.songs.length
+          (this.probabilityOfChordsInLabels[i][j] * 1.0) / this.numberOfSongs
       })
     })
   }
@@ -113,7 +113,7 @@ class ChordDifficultyClassifier {
   }
 
   // 取得總曲目長度
-  private getNumberOfSongs() {
+  private get numberOfSongs() {
     return this.songs.length
   }
 }
