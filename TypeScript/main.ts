@@ -38,12 +38,14 @@ class ChordDifficultyClassifier {
     this.songs.push([label, chords])
     // 將相對應順序的曲目標記寫入 labels
     this.labels.push(label)
-    for (let i = 0; i < chords.length; i++) {
-      if (!this.allChords.includes(chords[i])) {
+
+    chords.forEach((chord) => {
+      if (!this.allChords.includes(chord)) {
         // 將和弦寫入 allChords
-        this.allChords.push(chords[i])
+        this.allChords.push(chord)
       }
-    }
+    })
+
     // 將曲目的難度標記進行計數
     if (!!Object.keys(this.labelCounts).includes(label)) {
       this.labelCounts[label] = this.labelCounts[label] + 1
