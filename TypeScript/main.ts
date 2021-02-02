@@ -1,5 +1,3 @@
-const fs = require('fs')
-
 // songs
 const imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7']
 const somewhere_over_the_rainbow = ['c', 'em', 'f', 'g', 'am']
@@ -7,7 +5,6 @@ const tooManyCooks = ['c', 'g', 'f']
 const iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm']
 const babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab']
 const creep = ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6']
-const army = ['ab', 'ebm7', 'dbadd9', 'fm7', 'bbm', 'abmaj7', 'ebm']
 const paperBag = [
   'bm7',
   'e',
@@ -25,7 +22,6 @@ const paperBag = [
 ]
 const toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7']
 const bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#']
-const song_11 = []
 
 class ChordDifficultyClassifier {
   songs = []
