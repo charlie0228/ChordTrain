@@ -25,8 +25,6 @@ const bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#']
 
 class ChordDifficultyClassifier {
   songs: [string, string[]][] = []
-  labels: string[] = []
-  allChords: string[] = []
   labelCounts: Record<string, number> = {}
   labelProbabilities: Record<string, number> = {}
   chordCountsInLabels: Record<string, Record<string, number>> = {}
@@ -36,15 +34,6 @@ class ChordDifficultyClassifier {
   addDataset(chords: string[], label: string) {
     // 將標記與譜寫入 songs
     this.songs.push([label, chords])
-    // 將相對應順序的曲目標記寫入 labels
-    this.labels.push(label)
-
-    chords.forEach((chord) => {
-      if (!this.allChords.includes(chord)) {
-        // 將和弦寫入 allChords
-        this.allChords.push(chord)
-      }
-    })
 
     // 將曲目的難度標記進行計數
     if (!!Object.keys(this.labelCounts).includes(label)) {
