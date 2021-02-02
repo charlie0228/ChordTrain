@@ -21,14 +21,19 @@ var labelProbabilities = [];
 var chordCountsInLabels = {};
 var probabilityOfChordsInLabels = {};
 
+// 訓練
 function train(chords, label) {
+  // 將標記與譜寫入 songs
   songs.push([label, chords]);
+  // 將相對應順序的曲目標記寫入 labels
   labels.push(label);
   for (var i = 0; i < chords.length; i++) {
     if (!allChords.includes(chords[i])) {
+      // 將和弦寫入 allChords
       allChords.push(chords[i]);
     }
   }
+  // 將曲目的難度標記進行計數
   if(!!(Object.keys(labelCounts).includes(label))){
     labelCounts[label] = labelCounts[label] + 1;
   } else {
@@ -36,10 +41,12 @@ function train(chords, label) {
   }
 };
 
+// 取得總曲目長度
 function getNumberOfSongs(){
   return songs.length;
 };
 
+// 依照訓練資料建立難度分布之比率
 function setLabelProbabilities(){
   Object.keys(labelCounts).forEach(function(label){
     var numberOfSongs = getNumberOfSongs();
@@ -47,6 +54,7 @@ function setLabelProbabilities(){
   });
 };
 
+// 將各種難度的和弦進行計數
 function setChordCountsInLabels(){
   songs.forEach(function(i){
     if(chordCountsInLabels[i[0]] === undefined){
@@ -62,6 +70,7 @@ function setChordCountsInLabels(){
   })
 }
 
+// 計算各和弦出現於各難度的機率
 function setProbabilityOfChordsInLabels(){
   probabilityOfChordsInLabels = chordCountsInLabels;
   Object.keys(probabilityOfChordsInLabels).forEach(function (i){
@@ -85,6 +94,7 @@ setLabelProbabilities();
 setChordCountsInLabels();
 setProbabilityOfChordsInLabels();
 
+// 將輸入的曲目進行分類
 function classify(chords){
   var ttal = labelProbabilities;
   console.log(ttal);
