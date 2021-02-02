@@ -81,11 +81,11 @@ class ChordDifficultyClassifier {
 
   // 計算各和弦出現於各難度的機率
   setProbabilityOfChordsInLabels() {
-    this.probabilityOfChordsInLabels = this.chordCountsInLabels
-    Object.keys(this.probabilityOfChordsInLabels).forEach((i) => {
-      Object.keys(this.probabilityOfChordsInLabels[i]).forEach((j) => {
+    Object.keys(this.chordCountsInLabels).forEach((i) => {
+      this.probabilityOfChordsInLabels[i] = {}
+      Object.keys(this.chordCountsInLabels[i]).forEach((j) => {
         this.probabilityOfChordsInLabels[i][j] =
-          (this.probabilityOfChordsInLabels[i][j] * 1.0) / this.numberOfSongs
+          (this.chordCountsInLabels[i][j] * 1.0) / this.numberOfSongs
       })
     })
   }
