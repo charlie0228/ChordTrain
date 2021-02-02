@@ -13,106 +13,112 @@ var toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'];
 var bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'];
 var song_11 = [];
 
-var songs = [];
-var labels = [];
-var allChords = [];
-var labelCounts = [];
-var labelProbabilities = [];
-var chordCountsInLabels = {};
-var probabilityOfChordsInLabels = {};
+class ChordDifficultyClassifier {
+  songs = [];
+  labels = [];
+  allChords = [];
+  labelCounts = [];
+  labelProbabilities = [];
+  chordCountsInLabels = {};
+  probabilityOfChordsInLabels = {};
 
-// 訓練
-function train(chords, label) {
-  // 將標記與譜寫入 songs
-  songs.push([label, chords]);
-  // 將相對應順序的曲目標記寫入 labels
-  labels.push(label);
-  for (var i = 0; i < chords.length; i++) {
-    if (!allChords.includes(chords[i])) {
-      // 將和弦寫入 allChords
-      allChords.push(chords[i]);
+  // 訓練
+  train(chords, label) {
+    // 將標記與譜寫入 songs
+    this.songs.push([label, chords]);
+    // 將相對應順序的曲目標記寫入 labels
+    this.labels.push(label);
+    for (var i = 0; i < chords.length; i++) {
+      if (!this.allChords.includes(chords[i])) {
+        // 將和弦寫入 allChords
+        this.allChords.push(chords[i]);
+      }
+    }
+    // 將曲目的難度標記進行計數
+    if (!!Object.keys(this.labelCounts).includes(label)) {
+      this.labelCounts[label] = this.labelCounts[label] + 1;
+    } else {
+      this.labelCounts[label] = 1;
     }
   }
-  // 將曲目的難度標記進行計數
-  if(!!(Object.keys(labelCounts).includes(label))){
-    labelCounts[label] = labelCounts[label] + 1;
-  } else {
-    labelCounts[label] = 1;
+
+  // 依照訓練資料建立難度分布之比率
+  setLabelProbabilities() {
+    Object.keys(this.labelCounts).forEach((label) => {
+      var numberOfSongs = this.getNumberOfSongs();
+      this.labelProbabilities[label] = this.labelCounts[label] / numberOfSongs;
+    });
   }
-};
 
-// 取得總曲目長度
-function getNumberOfSongs(){
-  return songs.length;
-};
-
-// 依照訓練資料建立難度分布之比率
-function setLabelProbabilities(){
-  Object.keys(labelCounts).forEach(function(label){
-    var numberOfSongs = getNumberOfSongs();
-    labelProbabilities[label] = labelCounts[label] / numberOfSongs;
-  });
-};
-
-// 將各種難度的和弦進行計數
-function setChordCountsInLabels(){
-  songs.forEach(function(i){
-    if(chordCountsInLabels[i[0]] === undefined){
-      chordCountsInLabels[i[0]] = {};
-    }
-    i[1].forEach(function(j){
-      if(chordCountsInLabels[i[0]][j] > 0){
-        chordCountsInLabels[i[0]][j] = chordCountsInLabels[i[0]][j] + 1;
-      } else {
-        chordCountsInLabels[i[0]][j] = 1;
+  // 將各種難度的和弦進行計數
+  setChordCountsInLabels() {
+    this.songs.forEach((i) => {
+      if (this.chordCountsInLabels[i[0]] === undefined) {
+        this.chordCountsInLabels[i[0]] = {};
       }
-    })
-  })
+      i[1].forEach((j) => {
+        if (this.chordCountsInLabels[i[0]][j] > 0) {
+          this.chordCountsInLabels[i[0]][j] = this.chordCountsInLabels[i[0]][j] + 1;
+        } else {
+          this.chordCountsInLabels[i[0]][j] = 1;
+        }
+      });
+    });
+  }
+
+  // 計算各和弦出現於各難度的機率
+  setProbabilityOfChordsInLabels() {
+    this.probabilityOfChordsInLabels = this.chordCountsInLabels;
+    Object.keys(this.probabilityOfChordsInLabels).forEach((i) => {
+      Object.keys(this.probabilityOfChordsInLabels[i]).forEach((j) => {
+        this.probabilityOfChordsInLabels[i][j] =
+          (this.probabilityOfChordsInLabels[i][j] * 1.0) / this.songs.length;
+      });
+    });
+  }
+
+  // 將輸入的曲目進行分類
+  classify(chords) {
+    var ttal = this.labelProbabilities;
+    console.log(ttal);
+    var classified = {};
+    Object.keys(ttal).forEach((obj) => {
+      var first = this.labelProbabilities[obj] + 1.01;
+      chords.forEach((chord) => {
+        var probabilityOfChordsInLabel =
+        this.probabilityOfChordsInLabels[obj][chord];
+        if (probabilityOfChordsInLabel === undefined) {
+          first + 1.01;
+        } else {
+          first = first * (probabilityOfChordsInLabel + 1.01);
+        }
+      });
+      classified[obj] = first;
+    });
+    console.log(classified);
+  }
+
+  // 取得總曲目長度
+  private getNumberOfSongs() {
+    return this.songs.length;
+  }
 }
 
-// 計算各和弦出現於各難度的機率
-function setProbabilityOfChordsInLabels(){
-  probabilityOfChordsInLabels = chordCountsInLabels;
-  Object.keys(probabilityOfChordsInLabels).forEach(function (i){
-    Object.keys(probabilityOfChordsInLabels[i]).forEach(function (j) {
-      probabilityOfChordsInLabels[i][j] = probabilityOfChordsInLabels[i][j] * 1.0 / songs.length;
-    });
-  });
-}
+const chordDifficultyClassifier = new ChordDifficultyClassifier()
 
-train(imagine, 'easy');
-train(somewhere_over_the_rainbow, 'easy');
-train(tooManyCooks, 'easy');
-train(iWillFollowYouIntoTheDark, 'medium');
-train(babyOneMoreTime, 'medium');
-train(creep, 'medium');
-train(paperBag, 'hard');
-train(toxic, 'hard');
-train(bulletproof, 'hard');
+chordDifficultyClassifier.train(imagine, 'easy');
+chordDifficultyClassifier.train(somewhere_over_the_rainbow, 'easy');
+chordDifficultyClassifier.train(tooManyCooks, 'easy');
+chordDifficultyClassifier.train(iWillFollowYouIntoTheDark, 'medium');
+chordDifficultyClassifier.train(babyOneMoreTime, 'medium');
+chordDifficultyClassifier.train(creep, 'medium');
+chordDifficultyClassifier.train(paperBag, 'hard');
+chordDifficultyClassifier.train(toxic, 'hard');
+chordDifficultyClassifier.train(bulletproof, 'hard');
 
-setLabelProbabilities();
-setChordCountsInLabels();
-setProbabilityOfChordsInLabels();
+chordDifficultyClassifier.setLabelProbabilities()
+chordDifficultyClassifier.setChordCountsInLabels()
+chordDifficultyClassifier.setProbabilityOfChordsInLabels()
 
-// 將輸入的曲目進行分類
-export function classify(chords){
-  var ttal = labelProbabilities;
-  // console.log(ttal);
-  var classified = {};
-  Object.keys(ttal).forEach(function(obj) {
-    var first = labelProbabilities[obj] + 1.01;
-    chords.forEach(function(chord){
-      var probabilityOfChordsInLabel = probabilityOfChordsInLabels[obj][chord];
-      if(probabilityOfChordsInLabel === undefined){
-        first + 1.01;
-      } else {
-        first = first * (probabilityOfChordsInLabel + 1.01);
-      }
-    });
-    classified[obj] = first;
-  });
-  console.log(classified);
-};
-
-classify(['d', 'g', 'e', 'dm']);
-classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+chordDifficultyClassifier.classify(['d', 'g', 'e', 'dm']);
+chordDifficultyClassifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
