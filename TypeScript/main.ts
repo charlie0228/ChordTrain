@@ -24,16 +24,16 @@ const toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7']
 const bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#']
 
 class ChordDifficultyClassifier {
-  songs = []
-  labels = []
-  allChords = []
-  labelCounts = []
-  labelProbabilities = []
-  chordCountsInLabels = {}
-  probabilityOfChordsInLabels = {}
+  songs: [string, string[]][] = []
+  labels: string[] = []
+  allChords: string[] = []
+  labelCounts: Record<string, number> = {}
+  labelProbabilities: Record<string, number> = {}
+  chordCountsInLabels: Record<string, Record<string, number>> = {}
+  probabilityOfChordsInLabels: Record<string, Record<string, number>> = {}
 
   // 訓練
-  train(chords, label) {
+  train(chords: string[], label: string) {
     // 將標記與譜寫入 songs
     this.songs.push([label, chords])
     // 將相對應順序的曲目標記寫入 labels
@@ -89,10 +89,10 @@ class ChordDifficultyClassifier {
   }
 
   // 將輸入的曲目進行分類
-  classify(chords) {
+  classify(chords: string[]) {
     const ttal = this.labelProbabilities
     console.log(ttal)
-    const classified = {}
+    const classified: Record<string, number> = {}
     Object.keys(ttal).forEach((obj) => {
       let first = this.labelProbabilities[obj] + 1.01
       chords.forEach((chord) => {
