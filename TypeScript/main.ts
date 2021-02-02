@@ -1,17 +1,17 @@
 const fs = require('fs');
 
 // songs
-var imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
-var somewhere_over_the_rainbow = ['c', 'em', 'f', 'g', 'am'];
-var tooManyCooks = ['c', 'g', 'f'];
-var iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm'];
-var babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab'];
-var creep = ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'];
-var army = ['ab', 'ebm7', 'dbadd9', 'fm7', 'bbm', 'abmaj7', 'ebm'];
-var paperBag = ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'];
-var toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'];
-var bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'];
-var song_11 = [];
+const imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
+const somewhere_over_the_rainbow = ['c', 'em', 'f', 'g', 'am'];
+const tooManyCooks = ['c', 'g', 'f'];
+const iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm'];
+const babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab'];
+const creep = ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'];
+const army = ['ab', 'ebm7', 'dbadd9', 'fm7', 'bbm', 'abmaj7', 'ebm'];
+const paperBag = ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'];
+const toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'];
+const bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'];
+const song_11 = [];
 
 class ChordDifficultyClassifier {
   songs = [];
@@ -28,7 +28,7 @@ class ChordDifficultyClassifier {
     this.songs.push([label, chords]);
     // 將相對應順序的曲目標記寫入 labels
     this.labels.push(label);
-    for (var i = 0; i < chords.length; i++) {
+    for (let i = 0; i < chords.length; i++) {
       if (!this.allChords.includes(chords[i])) {
         // 將和弦寫入 allChords
         this.allChords.push(chords[i]);
@@ -45,7 +45,7 @@ class ChordDifficultyClassifier {
   // 依照訓練資料建立難度分布之比率
   setLabelProbabilities() {
     Object.keys(this.labelCounts).forEach((label) => {
-      var numberOfSongs = this.getNumberOfSongs();
+      let numberOfSongs = this.getNumberOfSongs();
       this.labelProbabilities[label] = this.labelCounts[label] / numberOfSongs;
     });
   }
@@ -79,13 +79,13 @@ class ChordDifficultyClassifier {
 
   // 將輸入的曲目進行分類
   classify(chords) {
-    var ttal = this.labelProbabilities;
+    const ttal = this.labelProbabilities;
     console.log(ttal);
-    var classified = {};
+    const classified = {};
     Object.keys(ttal).forEach((obj) => {
-      var first = this.labelProbabilities[obj] + 1.01;
+      let first = this.labelProbabilities[obj] + 1.01;
       chords.forEach((chord) => {
-        var probabilityOfChordsInLabel =
+        const probabilityOfChordsInLabel =
         this.probabilityOfChordsInLabels[obj][chord];
         if (probabilityOfChordsInLabel === undefined) {
           first + 1.01;
