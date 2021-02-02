@@ -91,7 +91,7 @@ class ChordDifficultyClassifier {
   // 將輸入的曲目進行分類
   classify(chords: string[]) {
     const ttal = this.labelProbabilities
-    console.log(ttal)
+    // console.log(ttal)
     const classified: Record<string, number> = {}
     Object.keys(ttal).forEach((obj) => {
       let first = this.labelProbabilities[obj] + 1.01
@@ -116,30 +116,25 @@ class ChordDifficultyClassifier {
   }
 }
 
-const chordDifficultyClassifier = new ChordDifficultyClassifier()
+export const classify = (chords: string[]): void => {
+  const chordDifficultyClassifier = new ChordDifficultyClassifier()
 
-chordDifficultyClassifier.train(imagine, 'easy')
-chordDifficultyClassifier.train(somewhere_over_the_rainbow, 'easy')
-chordDifficultyClassifier.train(tooManyCooks, 'easy')
-chordDifficultyClassifier.train(iWillFollowYouIntoTheDark, 'medium')
-chordDifficultyClassifier.train(babyOneMoreTime, 'medium')
-chordDifficultyClassifier.train(creep, 'medium')
-chordDifficultyClassifier.train(paperBag, 'hard')
-chordDifficultyClassifier.train(toxic, 'hard')
-chordDifficultyClassifier.train(bulletproof, 'hard')
+  chordDifficultyClassifier.train(imagine, 'easy')
+  chordDifficultyClassifier.train(somewhere_over_the_rainbow, 'easy')
+  chordDifficultyClassifier.train(tooManyCooks, 'easy')
+  chordDifficultyClassifier.train(iWillFollowYouIntoTheDark, 'medium')
+  chordDifficultyClassifier.train(babyOneMoreTime, 'medium')
+  chordDifficultyClassifier.train(creep, 'medium')
+  chordDifficultyClassifier.train(paperBag, 'hard')
+  chordDifficultyClassifier.train(toxic, 'hard')
+  chordDifficultyClassifier.train(bulletproof, 'hard')
 
-chordDifficultyClassifier.setLabelProbabilities()
-chordDifficultyClassifier.setChordCountsInLabels()
-chordDifficultyClassifier.setProbabilityOfChordsInLabels()
+  chordDifficultyClassifier.setLabelProbabilities()
+  chordDifficultyClassifier.setChordCountsInLabels()
+  chordDifficultyClassifier.setProbabilityOfChordsInLabels()
 
-chordDifficultyClassifier.classify(['d', 'g', 'e', 'dm'])
-chordDifficultyClassifier.classify([
-  'f#m7',
-  'a',
-  'dadd9',
-  'dmaj7',
-  'bm',
-  'bm7',
-  'd',
-  'f#m',
-])
+  chordDifficultyClassifier.classify(chords)
+}
+
+classify(['d', 'g', 'e', 'dm'])
+classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m'])
