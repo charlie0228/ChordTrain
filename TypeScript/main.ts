@@ -1,6 +1,6 @@
 // songs
 const imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7']
-const somewhere_over_the_rainbow = ['c', 'em', 'f', 'g', 'am']
+const somewhereOverTheRainbow = ['c', 'em', 'f', 'g', 'am']
 const tooManyCooks = ['c', 'g', 'f']
 const iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm']
 const babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab']
@@ -118,7 +118,7 @@ export const classify = (chords: string[]): void => {
   const classifier = new ChordDifficultyClassifier()
 
   classifier.addDataset(imagine, 'easy')
-  classifier.addDataset(somewhere_over_the_rainbow, 'easy')
+  classifier.addDataset(somewhereOverTheRainbow, 'easy')
   classifier.addDataset(tooManyCooks, 'easy')
   classifier.addDataset(iWillFollowYouIntoTheDark, 'medium')
   classifier.addDataset(babyOneMoreTime, 'medium')
