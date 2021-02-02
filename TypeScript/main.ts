@@ -95,9 +95,9 @@ setChordCountsInLabels();
 setProbabilityOfChordsInLabels();
 
 // 將輸入的曲目進行分類
-function classify(chords){
+export function classify(chords){
   var ttal = labelProbabilities;
-  console.log(ttal);
+  // console.log(ttal);
   var classified = {};
   Object.keys(ttal).forEach(function(obj) {
     var first = labelProbabilities[obj] + 1.01;
