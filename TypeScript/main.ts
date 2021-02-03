@@ -48,10 +48,10 @@ class ChordDifficultyClassifier {
   }
 
   // 將輸入的曲目進行分類
-  classify(chords: string[]) {
+  classify(chords: Chords) {
     const ttal = this.labelProbabilities
     // console.log(ttal)
-    const classified: Record<string, number> = {}
+    const classified: Record<Label, number> = {}
     Object.keys(ttal).forEach((obj) => {
       let first = this.labelProbabilities[obj] + 1.01
       chords.forEach((chord) => {
@@ -122,7 +122,7 @@ class ChordDifficultyClassifier {
   }
 }
 
-export const classify = (chords: string[]): void => {
+export const classify = (chords: Chords): void => {
   const classifier = new ChordDifficultyClassifier()
 
   classifier.addDatasets([
