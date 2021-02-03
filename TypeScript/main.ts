@@ -82,38 +82,44 @@ class ChordDifficultyClassifier {
 
   // 依照訓練資料建立難度分布之比率
   private setLabelProbabilities() {
-    this.labelProbabilities = Object.keys(this.labelCounts).reduce<
-      Record<Label, number>
-    >((acc, label) => {
-      acc[label] = this.labelCounts[label] / this.numberOfSongs
-      return acc
-    }, {})
+    const labels = Object.keys(this.labelCounts)
+
+    this.labelProbabilities = labels.reduce<Record<Label, number>>(
+      (acc, label) => {
+        acc[label] = this.labelCounts[label] / this.numberOfSongs
+        return acc
+      },
+      {}
+    )
   }
 
   // 將各種難度的和弦進行計數
   private setChordCountsInLabels() {
-    this.songs.forEach((i) => {
-      if (this.chordCountsInLabels[i[0]] === undefined) {
-        this.chordCountsInLabels[i[0]] = {}
+    this.songs.forEach(([label, chords]) => {
+      if (this.chordCountsInLabels[label] === undefined) {
+        this.chordCountsInLabels[label] = {}
       }
-      i[1].forEach((j) => {
-        if (this.chordCountsInLabels[i[0]][j] > 0) {
-          this.chordCountsInLabels[i[0]][j] =
-            this.chordCountsInLabels[i[0]][j] + 1
-        } else {
-          this.chordCountsInLabels[i[0]][j] = 1
-        }
+
+      chords.forEach((chord) => {
+        this.chordCountsInLabels[label][chord] =
+          this.chordCountsInLabels[label][chord] === undefined
+            ? 1
+            : this.chordCountsInLabels[label][chord] + 1
       })
     })
   }
 
   // 計算各和弦出現於各難度的機率
   private setProbabilityOfChordsInLabels() {
-    Object.keys(this.chordCountsInLabels).forEach((i) => {
-      this.probabilityOfChordsInLabels[i] = {}
-      Object.keys(this.chordCountsInLabels[i]).forEach((j) => {
-        this.probabilityOfChordsInLabels[i][j] =
-          (this.chordCountsInLabels[i][j] * 1.0) / this.numberOfSongs
+    const labels = Object.keys(this.chordCountsInLabels)
+
+    labels.forEach((label) => {
+      const chords = Object.keys(this.chordCountsInLabels[label])
+      this.probabilityOfChordsInLabels[label] = {}
+
+      chords.forEach((chord) => {
+        this.probabilityOfChordsInLabels[label][chord] =
+          (this.chordCountsInLabels[label][chord] * 1.0) / this.numberOfSongs
       })
     })
   }
