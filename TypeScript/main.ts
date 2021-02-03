@@ -27,11 +27,14 @@ type Chords = string[]
 type Label = string
 type LabeledTrainingDataset = [Label, Chords]
 class ChordDifficultyClassifier {
-  songs: LabeledTrainingDataset[] = []
-  labelCounts: Record<Label, number> = {}
-  labelProbabilities: Record<Label, number> = {}
-  chordCountsInLabels: Record<string, Record<string, number>> = {}
-  probabilityOfChordsInLabels: Record<string, Record<string, number>> = {}
+  private songs: LabeledTrainingDataset[] = []
+  private labelCounts: Record<Label, number> = {}
+  private labelProbabilities: Record<Label, number> = {}
+  private chordCountsInLabels: Record<string, Record<string, number>> = {}
+  private probabilityOfChordsInLabels: Record<
+    string,
+    Record<string, number>
+  > = {}
 
   // 寫入訓練資料
   addDatasets(datasets: LabeledTrainingDataset[]) {
