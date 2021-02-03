@@ -71,21 +71,23 @@ class ChordDifficultyClassifier {
 
   // 將曲目的難度標記進行計數
   private countLabels() {
-    this.songs.forEach(([label]) => {
-      if (this.labelCounts[label] === undefined) {
-        this.labelCounts[label] = 1
-      } else {
-        this.labelCounts[label] += 1
-      }
-    })
+    this.labelCounts = this.songs.reduce<Record<Label, number>>(
+      (acc, [label]) => {
+        acc[label] = acc[label] === undefined ? 1 : acc[label] + 1
+        return acc
+      },
+      {}
+    )
   }
 
   // 依照訓練資料建立難度分布之比率
   private setLabelProbabilities() {
-    Object.keys(this.labelCounts).forEach((label) => {
-      this.labelProbabilities[label] =
-        this.labelCounts[label] / this.numberOfSongs
-    })
+    this.labelProbabilities = Object.keys(this.labelCounts).reduce<
+      Record<Label, number>
+    >((acc, label) => {
+      acc[label] = this.labelCounts[label] / this.numberOfSongs
+      return acc
+    }, {})
   }
 
   // 將各種難度的和弦進行計數
