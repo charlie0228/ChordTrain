@@ -23,17 +23,20 @@ const paperBag = [
 const toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7']
 const bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#']
 
+type Chords = string[]
+type Label = string
+type LabeledTrainingDataset = [Label, Chords]
 class ChordDifficultyClassifier {
-  songs: [string, string[]][] = []
-  labelCounts: Record<string, number> = {}
-  labelProbabilities: Record<string, number> = {}
+  songs: LabeledTrainingDataset[] = []
+  labelCounts: Record<Label, number> = {}
+  labelProbabilities: Record<Label, number> = {}
   chordCountsInLabels: Record<string, Record<string, number>> = {}
   probabilityOfChordsInLabels: Record<string, Record<string, number>> = {}
 
-  // 訓練
-  addDataset(chords: string[], label: string) {
+  // 寫入訓練資料
+  addDatasets(datasets: LabeledTrainingDataset[]) {
     // 將標記與譜寫入 songs
-    this.songs.push([label, chords])
+    this.songs.push(...datasets)
   }
 
   // 依照訓練資料進行訓練
@@ -66,13 +69,13 @@ class ChordDifficultyClassifier {
     console.log(classified)
   }
 
+  // 將曲目的難度標記進行計數
   private countLabels() {
     this.songs.forEach(([label]) => {
-      // 將曲目的難度標記進行計數
-      if (!!Object.keys(this.labelCounts).includes(label)) {
-        this.labelCounts[label] = this.labelCounts[label] + 1
-      } else {
+      if (this.labelCounts[label] === undefined) {
         this.labelCounts[label] = 1
+      } else {
+        this.labelCounts[label] += 1
       }
     })
   }
@@ -122,15 +125,17 @@ class ChordDifficultyClassifier {
 export const classify = (chords: string[]): void => {
   const classifier = new ChordDifficultyClassifier()
 
-  classifier.addDataset(imagine, 'easy')
-  classifier.addDataset(somewhereOverTheRainbow, 'easy')
-  classifier.addDataset(tooManyCooks, 'easy')
-  classifier.addDataset(iWillFollowYouIntoTheDark, 'medium')
-  classifier.addDataset(babyOneMoreTime, 'medium')
-  classifier.addDataset(creep, 'medium')
-  classifier.addDataset(paperBag, 'hard')
-  classifier.addDataset(toxic, 'hard')
-  classifier.addDataset(bulletproof, 'hard')
+  classifier.addDatasets([
+    ['easy', imagine],
+    ['easy', somewhereOverTheRainbow],
+    ['easy', tooManyCooks],
+    ['medium', iWillFollowYouIntoTheDark],
+    ['medium', babyOneMoreTime],
+    ['medium', creep],
+    ['hard', paperBag],
+    ['hard', toxic],
+    ['hard', bulletproof],
+  ])
 
   classifier.train()
 
