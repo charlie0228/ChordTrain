@@ -34,17 +34,11 @@ class ChordDifficultyClassifier {
   addDataset(chords: string[], label: string) {
     // 將標記與譜寫入 songs
     this.songs.push([label, chords])
-
-    // 將曲目的難度標記進行計數
-    if (!!Object.keys(this.labelCounts).includes(label)) {
-      this.labelCounts[label] = this.labelCounts[label] + 1
-    } else {
-      this.labelCounts[label] = 1
-    }
   }
 
   // 依照訓練資料進行訓練
   train() {
+    this.countLabels()
     this.setLabelProbabilities()
     this.setChordCountsInLabels()
     this.setProbabilityOfChordsInLabels()
@@ -70,6 +64,17 @@ class ChordDifficultyClassifier {
       classified[obj] = first
     })
     console.log(classified)
+  }
+
+  private countLabels() {
+    this.songs.forEach(([label]) => {
+      // 將曲目的難度標記進行計數
+      if (!!Object.keys(this.labelCounts).includes(label)) {
+        this.labelCounts[label] = this.labelCounts[label] + 1
+      } else {
+        this.labelCounts[label] = 1
+      }
+    })
   }
 
   // 依照訓練資料建立難度分布之比率
